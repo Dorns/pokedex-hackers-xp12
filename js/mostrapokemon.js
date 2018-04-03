@@ -14,7 +14,7 @@ function mostraPokemon(url) {
     const res = JSON.parse(xhr.response);
     console.log(res);
     populaModal(res);
-    $('#modal').modal('show');
+    $('.modal').modal({ show: true });
   }
 }
 
@@ -27,49 +27,66 @@ function populaModal(pokemon) {
   //     (http://getbootstrap.com/docs/4.0/components/modal/#modal-components)
   //  2. LINKAR TODOS OS COMPONENTES COM O MODAL .modal
   //  3. SEMPRE QUE FECHAR O MODAL LIMPAR O CONTEUDO ADICIONADO
-  const modal = document.getElementById('modal');
+  const modal = document.querySelector('.modal');
 
-  const modalDialog = document.createElement('div');
-  modalDialog.classList.add('modal-dialog');
+  while(modal.firstChild) {
+    modal.removeChild(modal.firstChild);
+  }
 
-  const modalContent = document.createElement('div')
-  modalContent.classList.add('modal-content');
+  //estrutura modal
+  const dialog = document.createElement('div');
+  dialog.classList.add('modal-dialog');
+
+  const content = document.createElement('div');
+  content.classList.add('modal-content');
+  
+  const header = document.createElement('div');
+  header.classList.add('modal-header');
+  content.appendChild(header);
+  
+  //id
+  const id = document.createElement('h5');
+  id.classList.add('modal-title');
+  id.innerText = `#${pokemon.id}`;
+  header.appendChild(id);
+
+  const body = document.createElement('div');
+  body.classList.add('modal-body');
+  content.appendChild(body);
 
   //nome
-  const nome = document.createElement('h5');
-  nome.classList.add('modal-title');
-  nome.innerHTML = pokemon.name;
+  const nome = document.createElement('h1');
+  nome.innerText = pokemon.name;
+  body.appendChild(nome);
 
-  //imagem
-  const foto = document.createElement('img');
-  foto.src = pokemon.sprites.front_default;  
-
-  //tipo
-  const tipo = document.createElement('div');
-  tipo.classList.add('modal-body');
-  tipo.innerHTML = pokemon.types;
+  //tipos
+  const div = document.createElement('div');
+  div.innerText = "Tipos";
+  body.appendChild(div);
+  const tipos = document.createElement('ul');
+  pokemon.types.map(type => {
+    const tipo = document.createElement('li');
+    tipo.innerText = type.type.name;
+    tipos.appendChild(tipo);
+  });
+  body.appendChild(tipos);
 
   //peso
   const peso = document.createElement('div');
-  peso.classList.add('modal-body');
-  peso.innerHTML = pokemon.weight;
+  peso.innerText = `Peso: ${pokemon.weight}`;
+  body.appendChild(peso);
 
   //altura
   const altura = document.createElement('div');
-  altura.classList.add('modal-body');
-  altura.innerHTML = pokemon.height;
+  altura.innerText = `Altura: ${pokemon.height}`;
+  body.appendChild(altura);
 
-  //id
-  const id = document.createElement('div');
-  id.classList.add('modal-body');
-  id.innerHTML = pokemon.id;
+  //imagem
+  const img = document.createElement('img');
+  img.src = pokemon.sprites.front_default; 
+  body.appendChild(img);
 
-  modalContent.appendChild(modalDialog);
-  modalContent.appendChild(nome);
-  modalContent.appendChild(foto);
-  modalContent.appendChild(tipo);
-  modalContent.appendChild(peso);
-  modalContent.appendChild(altura);
-  modalContent.appendChild(id);
-  modal.appendChild(modalContent);
+
+  dialog.appendChild(content);
+  modal.appendChild(dialog);
 }
